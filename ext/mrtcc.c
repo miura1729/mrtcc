@@ -34,7 +34,7 @@ mrb_tcc_compile_string(mrb_state *mrb, mrb_value self)
   TCCState *s;
   mrb_value prog;
 
-  mrb_get_args(mrb, "s", &prog);
+  mrb_get_args(mrb, "o", &prog);
   s = DATA_PTR(self);
   return mrb_fixnum_value(tcc_compile_string(s, RSTRING_PTR(prog)));
 }
@@ -59,12 +59,31 @@ mrb_tcc_relocate(mrb_state *mrb, mrb_value self)
   return mrb_fixnum_value(size);
 }
 
+static mrb_value
+mrb_tcc_call(mrb_state *mrb, mrb_value self)
+{
+  TCCState *s;
+  mrb_value fname;
+  int (*func)();
+  
+  mrb_get_args(mrb, "o", &fname);
+  s = DATA_PTR(self);
+
+  func = tcc_get_symbol(s, RSTRING_PTR(fname));
+  if (!func)
+    return mrb_nil_value();
+  return mrb_fixnum_value(func());
+}
+
+
 void
-mrb_init_time(mrb_state *mrb)
+mrb_init_tcc(mrb_state *mrb)
 {
   struct RClass *tc;
   tc = mrb_define_class(mrb, "Tcc", mrb->object_class);
   mrb_define_class_method(mrb, tc, "new", mrb_tcc_new, ARGS_NONE());
 
   mrb_define_method(mrb, tc, "compile_string", mrb_tcc_compile_string, ARGS_REQ(1));
+  mrb_define_method(mrb, tc, "relocate", mrb_tcc_relocate, ARGS_NONE());
+  mrb_define_method(mrb, tc, "call", mrb_tcc_call, ARGS_REQ(1));
 }
