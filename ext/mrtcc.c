@@ -64,15 +64,45 @@ mrb_tcc_call(mrb_state *mrb, mrb_value self)
 {
   TCCState *s;
   mrb_value fname;
+  mrb_value *argv;
+  int argc;
   int (*func)();
   
-  mrb_get_args(mrb, "o", &fname);
+  mrb_get_args(mrb, "*", &argv, &argc);
+  fname = *(argv++);
+  argc--;
   s = DATA_PTR(self);
 
   func = tcc_get_symbol(s, RSTRING_PTR(fname));
   if (!func)
     return mrb_nil_value();
-  return mrb_fixnum_value(func());
+
+ switch (argc) {
+  case 0:
+    return mrb_fixnum_value(func());
+    break;
+
+  case 1:
+    return mrb_fixnum_value(func(argv[0].value.i));
+    break;
+
+  case 2:
+    return mrb_fixnum_value(func(argv[0].value.i, argv[1].value.i));
+    break;
+
+  case 3:
+    return mrb_fixnum_value(func(argv[0].value.i, argv[1].value.i, argv[2].value.i));
+    break;
+
+  case 4:
+    return mrb_fixnum_value(func(argv[0].value.i, argv[1].value.i, argv[2].value.i, argv[3].value.i));
+    break;
+
+  case 5:
+    return mrb_fixnum_value(func(argv[0].value.i, argv[1].value.i, argv[2].value.i, argv[3].value.i, argv[4].value.i));
+    break;
+  }
+ return mrb_nil_value();
 }
 
 
@@ -85,5 +115,5 @@ mrb_init_tcc(mrb_state *mrb)
 
   mrb_define_method(mrb, tc, "compile_string", mrb_tcc_compile_string, ARGS_REQ(1));
   mrb_define_method(mrb, tc, "relocate", mrb_tcc_relocate, ARGS_NONE());
-  mrb_define_method(mrb, tc, "call", mrb_tcc_call, ARGS_REQ(1));
+  mrb_define_method(mrb, tc, "call", mrb_tcc_call, ARGS_ANY());
 }
