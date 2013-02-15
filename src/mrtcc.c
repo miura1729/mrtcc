@@ -105,9 +105,8 @@ mrb_tcc_call(mrb_state *mrb, mrb_value self)
  return mrb_nil_value();
 }
 
-
 void
-mrb_init_tcc(mrb_state *mrb)
+mrb_mrtcc_gem_init(mrb_state *mrb)
 {
   struct RClass *tc;
   tc = mrb_define_class(mrb, "Tcc", mrb->object_class);
@@ -116,4 +115,9 @@ mrb_init_tcc(mrb_state *mrb)
   mrb_define_method(mrb, tc, "compile_string", mrb_tcc_compile_string, ARGS_REQ(1));
   mrb_define_method(mrb, tc, "relocate", mrb_tcc_relocate, ARGS_NONE());
   mrb_define_method(mrb, tc, "call", mrb_tcc_call, ARGS_ANY());
+}
+
+void
+mrb_mrtcc_gem_final(mrb_state *mrb)
+{
 }

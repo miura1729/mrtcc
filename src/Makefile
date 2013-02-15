@@ -7,7 +7,7 @@ CC = gcc
 LL = gcc
 AR = ar
 
-all : libmrtcc.a
+all : libmrtcc.a libmrtcc.so
 
 mrb_uv.o : mrtcc.c
 	gcc -c $(CFLAGS) mrtcc.c
@@ -17,3 +17,6 @@ libmrtcc.a : mrtcc.o
 
 clean :
 	rm -f *.o libmrtcc.a
+
+libmrtcc.so : mrtcc.o
+	gcc -shared -Wl,--enable-auto-image-base,--enable-auto-import -o libmrtcc.so mrtcc.o /usr/local/lib/libtcc.a
