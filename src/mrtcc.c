@@ -110,11 +110,11 @@ mrb_mrtcc_gem_init(mrb_state *mrb)
 {
   struct RClass *tc;
   tc = mrb_define_class(mrb, "Tcc", mrb->object_class);
-  mrb_define_class_method(mrb, tc, "new", mrb_tcc_new, ARGS_NONE());
+  mrb_define_class_method(mrb, tc, "new", mrb_tcc_new, MRB_ARGS_NONE());
 
-  mrb_define_method(mrb, tc, "compile_string", mrb_tcc_compile_string, ARGS_REQ(1));
-  mrb_define_method(mrb, tc, "relocate", mrb_tcc_relocate, ARGS_NONE());
-  mrb_define_method(mrb, tc, "call", mrb_tcc_call, ARGS_ANY());
+  mrb_define_method(mrb, tc, "compile_string", mrb_tcc_compile_string, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, tc, "relocate", mrb_tcc_relocate, MRB_ARGS_NONE());
+  mrb_define_method(mrb, tc, "call", mrb_tcc_call, MRB_ARGS_ANY());
 }
 
 void
